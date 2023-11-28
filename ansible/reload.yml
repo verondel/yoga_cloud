@@ -1,0 +1,18 @@
+###############################
+#   WEB TO DO APPLICATION  #
+###############################
+
+---
+- name: "Run Docker compose service: database"
+  hosts: database
+  vars_files:
+    - "./docker-service/vars/database.yml"
+  roles:
+    - docker-service
+
+- name: "Run Docker compose service: web app"
+  hosts: webapp
+  vars_files:
+    - "./docker-service/vars/webapp.yml"
+  roles:
+    - docker-service

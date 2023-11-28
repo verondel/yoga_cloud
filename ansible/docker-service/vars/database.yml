@@ -1,0 +1,21 @@
+---
+# vars file for docker-service
+
+docker_service__compose:
+  version: "3"
+  services:
+    postgres:
+      container_name: postgres
+      image: verondel/yoga_postgres:1.12
+      environment:
+        POSTGRES_DB: "{{POSTGRES_DB}}"
+        POSTGRES_USER: "{{POSTGRES_USER}}"
+        POSTGRES_PASSWORD: "{{POSTGRES_PASSWORD}}"
+        PGDATA: "/var/lib/postgresql/data/pgdata"
+      volumes:
+        - yoga_db_data:/var/lib/postgresql/data
+      ports:
+        - "5432:5432"
+      restart: always
+  volumes:
+    yoga_db_data:

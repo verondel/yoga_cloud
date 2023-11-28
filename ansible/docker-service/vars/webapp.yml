@@ -1,0 +1,25 @@
+---
+# vars file for docker-service
+
+docker_service__compose:
+  version: "3"
+  services:
+    ui:
+      image: verondel/yoga_client:1.28
+      restart: always
+      ports:
+        - "3000:3000"
+      environment: 
+        FLOATING_IP_UI: "{{webapp_ip_public}}"
+        PRIVATE_IP_DB: "{{private_database_ip}}"
+      depends_on:
+        - rest
+    rest:
+      image: verondel/yoga_rest:1.9
+      container_name: rest
+      restart: always
+      ports:
+        - "3001:3001"
+        - "5555:5555" 
+      environment:
+        DATABASE_URL: "postgresql://{{POSTGRES_USER}}:{{POSTGRES_PASSWORD}}@{{private_database_ip}}:5432/{{POSTGRES_DB}}"

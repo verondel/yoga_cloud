@@ -1,0 +1,51 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:15.4-alpine3.18
+    environment:
+      POSTGRES_DB: "yoga_db"
+      POSTGRES_USER: "yoga_db"
+      POSTGRES_PASSWORD: "1"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - /home/a1/yoga/test_docker/sql:/docker-entrypoint-initdb.d
+      - yoga_db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - appnet
+
+  ui:
+    image: verondel/yoga_client:1.2
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - rest
+    networks:
+      - appnet
+
+  rest:
+    image: verondel/yoga_rest:1.7
+    container_name: rest
+    restart: always
+    ports:
+      - "3001:3001"
+      - "5555:5555" 
+    environment:
+      DATABASE_URL: "postgresql://yoga_db:1@postgres:5432/yoga_db"
+    depends_on:
+      - postgres
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    name: appnet
+    driver: bridge
+
+volumes:
+  yoga_db_data:
